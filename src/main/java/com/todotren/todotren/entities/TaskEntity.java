@@ -26,7 +26,11 @@ public class TaskEntity {
 
     private LocalDateTime dateTime;
 
+    @JoinColumn (name = "state_id")
+    @ManyToOne
     private StateEntity state;
 
+    @JoinColumn (name = "importance_id")
+    @ManyToOne
     private ImportanceEntity importance;
 }
