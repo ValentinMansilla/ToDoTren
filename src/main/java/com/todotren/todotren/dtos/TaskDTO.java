@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import jakarta.validation.constraints.NotNull;
 
+import java.time.LocalDateTime;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -15,6 +17,8 @@ public class TaskDTO {
     private String name;
     @NotNull
     private String desc;
+    @NotNull
+    private LocalDateTime dateTime;
     @NotNull
     private Importance importance;
     @NotNull

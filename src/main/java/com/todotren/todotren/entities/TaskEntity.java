@@ -15,6 +15,13 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TaskEntity {
+
+    public TaskEntity(String name, String desc, LocalDateTime dateTime){
+        this.name = name;
+        this.desc = desc;
+        this.dateTime = dateTime;
+
+    }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
