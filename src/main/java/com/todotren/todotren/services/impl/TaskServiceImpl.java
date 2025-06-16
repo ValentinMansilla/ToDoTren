@@ -15,6 +15,7 @@ import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -60,7 +61,25 @@ public class TaskServiceImpl implements TaskService {
                     ImportanceEntity importanceEntity = optionalImportanceEntity.get();
                     newEntity.setImportance(importanceEntity);
                 }
-                taskRepository.save(newEntity);
+                saveTask(newEntity);
             }
     }
+
+    @Override
+    @Transactional
+    public Task getByName(String name) {
+
+        Optional<TaskEntity> optionalTaskEntity = taskRepository.findByName(name);
+
+        if(optionalTaskEntity.isPresent()){
+            TaskEntity taskEntity = optionalTaskEntity.get();
+            return mappersConfig.mergerMapper().map(taskEntity, Task.class);
+        }
+        else return null;
+    }
+
+    private void saveTask(TaskEntity task){
+        taskRepository.save(task);
+    }
+
 }

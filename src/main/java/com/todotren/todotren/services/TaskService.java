@@ -10,4 +10,5 @@ import java.util.List;
 public interface TaskService {
     List<Task> getAllTasks();
     void newTask(String name, String desc, Importance importance);
+    Task getByName(String name);
 }
