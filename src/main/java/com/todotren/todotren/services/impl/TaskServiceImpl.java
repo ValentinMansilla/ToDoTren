@@ -11,6 +11,7 @@ import com.todotren.todotren.repositories.ImportanceRepository;
 import com.todotren.todotren.repositories.StateRepository;
 import com.todotren.todotren.repositories.TaskRepository;
 import com.todotren.todotren.services.TaskService;
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,8 +39,8 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @Transactional
     public void newTask(String name, String desc, Importance importance) {
-        try{
             if (name!=null && !name.isEmpty() && desc!=null && importance!=null){
                 Task newTask = new Task();
                 newTask.setName(name);
@@ -61,9 +62,5 @@ public class TaskServiceImpl implements TaskService {
                 }
                 taskRepository.save(newEntity);
             }
-        }catch (Exception e){ //todo controlador de excepciones
-            System.out.println(e.toString());
-        }
-
     }
 }

@@ -29,12 +29,7 @@ public class TaskController {
     public List<Task> alltasks(){
         return taskService.getAllTasks();
     }
-
-    @GetMapping("/allimportances")
-    public List<ImportanceEntity> allimportances(){
-        return importanceRepository.findAll();
-    }
-    @PutMapping("/newTask")
+    @PutMapping("/newtask")
     public void newTask(@RequestParam String name,
                         @RequestParam String desc,
                         @RequestParam String importance){
