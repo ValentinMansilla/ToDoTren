@@ -13,14 +13,13 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TaskDTO {
+    private Long id;
     @NotNull
     private String name;
     @NotNull
     private String desc;
-    @NotNull
     private LocalDateTime dateTime;
     @NotNull
     private Importance importance;
-    @NotNull
     private State state;
 }

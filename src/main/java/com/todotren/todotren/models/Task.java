@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Task {
+    private Long id;
     private String name;
     private String desc;
     private LocalDateTime dateTime;

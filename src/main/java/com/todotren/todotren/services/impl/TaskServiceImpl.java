@@ -1,10 +1,10 @@
 package com.todotren.todotren.services.impl;
 
 import com.todotren.todotren.config.MappersConfig;
+import com.todotren.todotren.dtos.TaskDTO;
 import com.todotren.todotren.entities.ImportanceEntity;
 import com.todotren.todotren.entities.StateEntity;
 import com.todotren.todotren.entities.TaskEntity;
-import com.todotren.todotren.models.Importance;
 import com.todotren.todotren.models.State;
 import com.todotren.todotren.models.Task;
 import com.todotren.todotren.repositories.ImportanceRepository;
@@ -12,10 +12,8 @@ import com.todotren.todotren.repositories.StateRepository;
 import com.todotren.todotren.repositories.TaskRepository;
 import com.todotren.todotren.services.TaskService;
 import jakarta.transaction.Transactional;
-import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -35,51 +33,65 @@ public class TaskServiceImpl implements TaskService {
     private ImportanceRepository importanceRepository;
 
     @Override
-    public List<Task> getAllTasks() {
-        return mappersConfig.modelMapper().map(taskRepository.findAll(), new TypeToken<List<Task>>(){}.getType());
+    public List<TaskDTO> getAllTasks() {
+        return mappersConfig.mergerMapper().map(mappersConfig.modelMapper().map(taskRepository.findAll(), new TypeToken<List<Task>>(){}.getType()), new TypeToken<List<TaskDTO>>(){}.getType());
     }
 
     @Override
     @Transactional
-    public void newTask(String name, String desc, Importance importance) {
-            if (name!=null && !name.isEmpty() && desc!=null && importance!=null){
-                Task newTask = new Task();
-                newTask.setName(name);
-                newTask.setDesc(desc);
-                newTask.setDateTime(LocalDateTime.now());
+    public TaskDTO updateTask(TaskDTO taskDTO) {
+        TaskEntity saved = new TaskEntity();
+        StateEntity state = new StateEntity();
+        ImportanceEntity importance = new ImportanceEntity();
 
-                TaskEntity newEntity = new TaskEntity();
-                mappersConfig.modelMapper().map(newTask,newEntity);
 
-                Optional<StateEntity> optionalStateEntity = stateRepository.findByState(State.INITIALIZED);
-                if(optionalStateEntity.isPresent()){
-                    StateEntity stateEntity = optionalStateEntity.get();
-                    newEntity.setState(stateEntity);
-                }
-                Optional<ImportanceEntity> optionalImportanceEntity = importanceRepository.findByImportance(importance);
-                if(optionalStateEntity.isPresent()){
-                    ImportanceEntity importanceEntity = optionalImportanceEntity.get();
-                    newEntity.setImportance(importanceEntity);
-                }
-                saveTask(newEntity);
+        if(taskDTO.getId()!=null){
+
+                    Optional<TaskEntity> optionalSaved = taskRepository.findById(taskDTO.getId());
+                    if (optionalSaved.isPresent()) {
+                        saved = optionalSaved.get();
+                        saved.setDateTime(saved.getDateTime());
+                    }
+                    Optional<StateEntity> optionalStateEntity = stateRepository.findByState(taskDTO.getState());
+                    if(optionalStateEntity.isPresent()){
+                        state = optionalStateEntity.get();
+                    }
+
+        }else{
+
+            Optional<StateEntity> optionalStateEntity = stateRepository.findByState(State.INITIALIZED);
+            if(optionalStateEntity.isPresent()){
+                state = optionalStateEntity.get();
             }
+
+            saved.setDateTime(LocalDateTime.now());
+
+        }
+
+        Optional<ImportanceEntity> optionalImportanceEntity = importanceRepository.findByImportance(taskDTO.getImportance());
+        if(optionalImportanceEntity.isPresent()){
+            importance = optionalImportanceEntity.get();
+        }
+
+        saved.setImportance(importance);
+        saved.setName(taskDTO.getName());
+        saved.setDesc(taskDTO.getDesc());
+        saved.setState(state);
+        saved.setId(taskRepository.save(saved).getId());
+        return mappersConfig.modelMapper().map(saved, TaskDTO.class);
+
     }
 
     @Override
-    @Transactional
-    public Task getByName(String name) {
+    public TaskDTO getById(Long id) {
 
-        Optional<TaskEntity> optionalTaskEntity = taskRepository.findByName(name);
+        Optional<TaskEntity> optionalTaskEntity = taskRepository.findById(id);
 
         if(optionalTaskEntity.isPresent()){
             TaskEntity taskEntity = optionalTaskEntity.get();
-            return mappersConfig.mergerMapper().map(taskEntity, Task.class);
+            return mappersConfig.mergerMapper().map(mappersConfig.mergerMapper().map(taskEntity, Task.class),TaskDTO.class);
         }
         else return null;
-    }
-
-    private void saveTask(TaskEntity task){
-        taskRepository.save(task);
     }
 
 }

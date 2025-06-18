@@ -9,7 +9,4 @@ import java.util.Optional;
 @Repository
 public interface TaskRepository extends JpaRepository<TaskEntity, Long> {
 
-    Optional<TaskEntity> findByName(String name);
-
-
 }
