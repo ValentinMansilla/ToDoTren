@@ -19,8 +19,6 @@ public class TaskController {
 
     @Autowired
     TaskService taskService;
-    @Autowired
-    MappersConfig mappersConfig;
 
     @GetMapping("/getall")
     public List<TaskDTO> alltasks(){
@@ -36,6 +34,11 @@ public class TaskController {
     public ResponseEntity<TaskDTO> updateTask(@RequestBody TaskDTO taskDTO){
 
         return ResponseEntity.ok(taskService.updateTask(taskDTO));
+    }
+    @DeleteMapping("/deletebyid")
+    public ResponseEntity<String> deleteById(@RequestParam Long id){
+        taskService.deleteById(id);
+        return ResponseEntity.ok("Task successfully deleted");
     }
 
 

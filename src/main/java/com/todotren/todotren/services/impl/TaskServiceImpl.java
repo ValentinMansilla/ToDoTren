@@ -83,6 +83,15 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    public void deleteById(Long id) {
+        Optional<TaskEntity> optionalSaved = taskRepository.findById(id);
+        if (!optionalSaved.isPresent()) {
+            throw new RuntimeException("Entity not found");
+        }
+        taskRepository.deleteById(id);
+    }
+
+    @Override
     public TaskDTO getById(Long id) {
 
         Optional<TaskEntity> optionalTaskEntity = taskRepository.findById(id);
