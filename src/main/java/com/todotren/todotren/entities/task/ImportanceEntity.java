@@ -1,4 +1,4 @@
-package com.todotren.todotren.entities;
+package com.todotren.todotren.entities.task;
 
 import com.todotren.todotren.models.Importance;
 import jakarta.persistence.*;

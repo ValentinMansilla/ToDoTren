@@ -3,6 +3,7 @@ id bigint NOT NULL,
 type_id varchar(50)
 constraint pk_typesid primary key(id)
 );
+
 create table costumers(
 id bigint NOT NULL,
 name varchar(50),
@@ -13,11 +14,13 @@ dni int,
 constraint pk_costumers primary key (id),
 constraint fk_costumer_address foreign key (type_id) references types_id (id)
 );
+
 create table contacts_type(
 id bigint NOT NULL,
 type_contact varchar(50),
 constraint pk_typescontact primary key(id)
 );
+
 create table contacts(
 id bigint NOT NULL,
 costumer_id bigint,

@@ -1,4 +1,4 @@
-package com.todotren.todotren.entities;
+package com.todotren.todotren.entities.task;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

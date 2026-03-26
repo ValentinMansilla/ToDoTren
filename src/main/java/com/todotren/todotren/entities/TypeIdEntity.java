@@ -1,6 +1,6 @@
 package com.todotren.todotren.entities;
 
-import com.todotren.todotren.models.TypeId;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,8 +16,8 @@ import lombok.Setter;
 public class TypeIdEntity {
 
     @Id
-    private Long typeId_id;
+    private Long type_id;
 
     @Column
-    private TypeId typeId;
+    private String type;
 }
