@@ -1,6 +1,6 @@
 package com.todotren.todotren.repositories;
 
-import com.todotren.todotren.entities.ImportanceEntity;
+import com.todotren.todotren.entities.task.ImportanceEntity;
 import com.todotren.todotren.models.Importance;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

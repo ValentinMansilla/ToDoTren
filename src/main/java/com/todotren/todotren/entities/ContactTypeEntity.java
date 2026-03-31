@@ -1,5 +1,7 @@
 package com.todotren.todotren.entities;
 
+import com.todotren.todotren.models.ContactType;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,5 +20,6 @@ public class ContactTypeEntity {
     private Long contact_type_id;
 
     @Column
-    private String contactType;
+    @Enumerated(EnumType.STRING)
+    private ContactType contact_type;
 }

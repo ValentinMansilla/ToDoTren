@@ -1,6 +1,6 @@
 package com.todotren.todotren.repositories;
 
-import com.todotren.todotren.entities.StateEntity;
+import com.todotren.todotren.entities.task.StateEntity;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;

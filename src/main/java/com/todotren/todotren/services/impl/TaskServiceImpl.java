@@ -2,9 +2,9 @@ package com.todotren.todotren.services.impl;
 
 import com.todotren.todotren.config.MappersConfig;
 import com.todotren.todotren.dtos.TaskDTO;
-import com.todotren.todotren.entities.ImportanceEntity;
-import com.todotren.todotren.entities.StateEntity;
-import com.todotren.todotren.entities.TaskEntity;
+import com.todotren.todotren.entities.task.ImportanceEntity;
+import com.todotren.todotren.entities.task.StateEntity;
+import com.todotren.todotren.entities.task.TaskEntity;
 import com.todotren.todotren.models.State;
 import com.todotren.todotren.models.Task;
 import com.todotren.todotren.repositories.ImportanceRepository;

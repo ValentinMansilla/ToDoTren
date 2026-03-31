@@ -1,6 +1,6 @@
 create table types_id(
 id bigint NOT NULL,
-type_id varchar(50)
+tipe varchar(50)
 constraint pk_typesid primary key(id)
 );
 

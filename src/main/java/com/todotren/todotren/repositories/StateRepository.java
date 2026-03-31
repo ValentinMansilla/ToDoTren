@@ -1,6 +1,6 @@
 package com.todotren.todotren.repositories;
 
-import com.todotren.todotren.entities.StateEntity;
+import com.todotren.todotren.entities.task.StateEntity;
 import com.todotren.todotren.models.State;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
