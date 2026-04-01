@@ -10,7 +10,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CostumerRepository extends JpaRepository<CostumerEntity, Long> {
-
-	Optional<CostumerEntity> findById(Long id);
 	Optional<CostumerEntity> findByName(String name);
 }

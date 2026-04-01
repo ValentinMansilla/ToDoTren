@@ -12,7 +12,6 @@ import com.todotren.todotren.repositories.StateRepository;
 import com.todotren.todotren.repositories.TaskRepository;
 import com.todotren.todotren.services.TaskService;
 import jakarta.transaction.Transactional;
-import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,6 +44,20 @@ public class TaskServiceImpl implements TaskService {
         return mappersConfig.mergerMapper().map(mappersConfig.modelMapper().map(taskRepository.findAll(), new TypeToken<List<Task>>(){}.getType()), new TypeToken<List<TaskDTO>>(){}.getType());
     }
 
+    /**Method to take a single task from the database
+     * @param id The id of the task required.
+     * @return a single task.*/
+    @Override
+    public TaskDTO getById(Long id) {
+    	
+    	Optional<TaskEntity> optionalTaskEntity = taskRepository.findById(id);
+    	
+    	if(optionalTaskEntity.isPresent()){
+    		TaskEntity taskEntity = optionalTaskEntity.get();
+    		return mappersConfig.mergerMapper().map(mappersConfig.mergerMapper().map(taskEntity, Task.class),TaskDTO.class);
+    	}
+    	else return null;
+    }
     /**Method to create a new task or update an existing one. If the param has an id it will update it.If not, it will create it.Then, it will save it on database.
      * @param taskDTO defines the function of the method.
      * @return a saved task with its new data.
@@ -105,19 +118,5 @@ public class TaskServiceImpl implements TaskService {
         taskRepository.deleteById(id);
     }
 
-    /**Method to take a single task from the database
-     * @param id The id of the task required.
-     * @return a single task.*/
-    @Override
-    public TaskDTO getById(Long id) {
-
-        Optional<TaskEntity> optionalTaskEntity = taskRepository.findById(id);
-
-        if(optionalTaskEntity.isPresent()){
-            TaskEntity taskEntity = optionalTaskEntity.get();
-            return mappersConfig.mergerMapper().map(mappersConfig.mergerMapper().map(taskEntity, Task.class),TaskDTO.class);
-        }
-        else return null;
-    }
 
 }
