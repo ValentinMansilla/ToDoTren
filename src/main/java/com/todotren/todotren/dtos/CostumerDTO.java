@@ -12,7 +12,8 @@ import jakarta.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CostumerDTO {
-    private String name;
+    
+	private String name;
 
     @NotNull
     private String surname;

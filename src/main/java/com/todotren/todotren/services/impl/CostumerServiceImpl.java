@@ -35,42 +35,49 @@ public class CostumerServiceImpl implements CostumerService {
 	@Override
     public CostumerDTO updateCostumer(CostumerDTO costumerDTO) {
 		CostumerEntity savedEntity = null;
+		Costumer costumer = null;
+		Costumer newCostumer = mappersConfig.mergerMapper().map(costumerDTO, Costumer.class);
 		
-		if(costumerRepository.existsByDNI(costumerDTO.getDni())) {
-			Optional<CostumerEntity> optionalOldEntity= costumerRepository.findByDNI(costumerDTO.getDni());
+		if(costumerRepository.existsBydni(newCostumer.getDni())) {
+			Optional<CostumerEntity> optionalOldEntity= costumerRepository.findBydni(costumerDTO.getDni());
 			CostumerEntity oldEntity = null;
 			if(optionalOldEntity.isPresent()) {
 				 oldEntity = optionalOldEntity.get();
 			}
-			Costumer oldCostumer = mappersConfig.mergerMapper().map(oldEntity, Costumer.class);
-			Costumer newCostumer = mappersConfig.mergerMapper().map(costumerDTO, Costumer.class);
-			
-			oldCostumer.setName(newCostumer.getName());
-			oldCostumer.setSurname(newCostumer.getSurname());
-			oldCostumer.setAddress(newCostumer.getAddress());
-			
-			savedEntity = mappersConfig.mergerMapper().map(oldCostumer, CostumerEntity.class);
-			return mappersConfig.mergerMapper().map( //mapper that maps a costumer to a costumerDTO
-					mappersConfig.mergerMapper().map( //mapper that maps a costumerEntity to a costumer
-							costumerRepository.save(savedEntity),Costumer.class), //costumerEntity to costumer
-					CostumerDTO.class); //costumerDTO
-			
+			costumer = mappersConfig.mergerMapper().map(oldEntity, Costumer.class);
+				
 
 		}else {
 			Long id = null;
 			List<CostumerEntity> list=costumerRepository.findAll();
 			for(CostumerEntity last : list) {
+				if(last.getCostumer_id() == null) {
+					id = 0L;
+					break;
+				}
 				if(last.getCostumer_id()> id) {
 					id = last.getCostumer_id();
 				}
 			}
+			id++;
+			costumer = new Costumer();
+			costumer.setCostumerId(id);
+			costumer.setIdType(newCostumer.getIdType());
+			costumer.setDni(newCostumer.getDni());
+			
+			
 			
 		}
-
-		Costumer costumer = mappersConfig.mergerMapper().map(costumerDTO, Costumer.class);
+		costumer.setName(newCostumer.getName());
+		costumer.setSurname(newCostumer.getSurname());
+		costumer.setAddress(newCostumer.getAddress());
 		
-		
-		return costumerDTO;}
+		savedEntity = mappersConfig.mergerMapper().map(costumer, CostumerEntity.class);
+		return mappersConfig.mergerMapper().map( //mapper that maps a costumer to a costumerDTO
+				mappersConfig.mergerMapper().map( //mapper that maps a costumerEntity to a costumer
+						costumerRepository.save(savedEntity),Costumer.class), //costumerEntity to costumer
+				CostumerDTO.class); //costumerDTO
+}
 	@Override
     public void deleteByDni(Integer dni){
 		
