@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.todotren.todotren.dtos.CostumerDTO;
-
+import com.todotren.todotren.entities.TypeIdEntity;
+import com.todotren.todotren.repositories.TypeIdRepository;
 import com.todotren.todotren.services.CostumerService;
 
 @RestController
@@ -20,11 +21,17 @@ public class CostumerController {
 	
 	@Autowired
 	private CostumerService costumerService;
+	@Autowired
+	private TypeIdRepository typeIdEntity;
 	
 	
     @GetMapping("/getall")
     public List<CostumerDTO> getAllCostumers() {
     	return costumerService.getAllCostumers();
+    	}
+    @GetMapping("/getalltypes")
+    public List<TypeIdEntity> getAlltypes() {
+    	return typeIdEntity.findAll();
     	}
     
     @PostMapping("/newcostumer")

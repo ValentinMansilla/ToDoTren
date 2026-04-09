@@ -2,6 +2,9 @@ package com.todotren.todotren.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.todotren.todotren.dtos.CostumerDTO;
+import com.todotren.todotren.entities.CostumerEntity;
+
 import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
@@ -23,10 +26,15 @@ public class MappersConfig {
 
     @Bean("mergerMapper")
     public ModelMapper mergerMapper() {
-        ModelMapper mapper =  new ModelMapper();
-        mapper.getConfiguration()
+        ModelMapper modelMapper =  new ModelMapper();
+        
+        modelMapper.getConfiguration()
                 .setPropertyCondition(Conditions.isNotNull());
-        return mapper;
+        modelMapper.typeMap(CostumerEntity.class, CostumerDTO.class).addMappings(
+        		mapper ->{
+        			mapper.map(fuente -> fuente.getIdType().getTipe(), CostumerDTO::setIdType);
+        		});
+        return modelMapper;
     }
 
     @Bean

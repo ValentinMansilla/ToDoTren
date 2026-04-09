@@ -3,9 +3,13 @@ package com.todotren.todotren.services.impl;
 import com.todotren.todotren.config.MappersConfig;
 import com.todotren.todotren.dtos.CostumerDTO;
 import com.todotren.todotren.entities.CostumerEntity;
+import com.todotren.todotren.entities.TypeIdEntity;
 import com.todotren.todotren.models.Costumer;
 import com.todotren.todotren.repositories.CostumerRepository;
+import com.todotren.todotren.repositories.TypeIdRepository;
 import com.todotren.todotren.services.CostumerService;
+
+import jakarta.transaction.Transactional;
 
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,24 +25,83 @@ public class CostumerServiceImpl implements CostumerService {
 	private CostumerRepository costumerRepository;
     @Autowired
     private MappersConfig mappersConfig;
+    @Autowired
+    private TypeIdRepository typeIdRepository;
 	
 	@Override
     public List<CostumerDTO> getAllCostumers() { 
-		return mappersConfig.mergerMapper().map( //mapper that maps a list of costumers to a list of costumerDTOs
-				mappersConfig.mergerMapper().map( //mapper that maps a list of costumerEntities to a list of costumers
-						costumerRepository.findAll(), new TypeToken<List<Costumer>>(){}.getType()), //costumerEntites to costumers
-				new TypeToken<List<CostumerDTO>>(){}.getType()); //costumerDTOs
+		return  mappersConfig.mergerMapper().map(costumerRepository.findAll(), new TypeToken<List<CostumerDTO>>(){}.getType()); //costumerDTOs
 	}
 	@Override
     public CostumerDTO getByDni(Integer dni) {
 		return null;}
 	@Override
+	@Transactional
     public CostumerDTO updateCostumer(CostumerDTO costumerDTO) {
-		CostumerEntity savedEntity = null;
-		Costumer costumer = null;
-		Costumer newCostumer = mappersConfig.mergerMapper().map(costumerDTO, Costumer.class);
+		CostumerEntity savedEntity = new CostumerEntity();
+		TypeIdEntity typeIdentity = new TypeIdEntity();
 		
-		if(costumerRepository.existsBydni(newCostumer.getDni())) {
+		Optional<TypeIdEntity> optionalTypeIdEntity = typeIdRepository.findBytipe(costumerDTO.getIdType());
+		if(optionalTypeIdEntity.isPresent()) {
+			typeIdentity = optionalTypeIdEntity.get();
+		}
+		
+		if(costumerRepository.existsBydni(costumerDTO.getDni())) {
+			Optional<CostumerEntity> optionalOldEntity= costumerRepository.findBydni(costumerDTO.getDni());
+			CostumerEntity oldEntity = null;
+			if(optionalOldEntity.isPresent()) {
+				 oldEntity = optionalOldEntity.get();
+			}
+			savedEntity.setCostumer_id(oldEntity.getCostumer_id());
+			
+		}else {
+			
+			Long id = null;
+			List<CostumerEntity> list=costumerRepository.findAll();
+			if(list.isEmpty()) {
+				id = 0L;
+				}
+			else {
+				for(CostumerEntity last : list) {
+				
+				if(id == null || last.getCostumer_id()> id) {
+					id = last.getCostumer_id();
+				}
+				id++;
+
+				}
+			
+				
+			}
+			savedEntity.setCostumer_id(id);
+		}
+		savedEntity.setIdType(typeIdentity);
+		savedEntity.setDni(costumerDTO.getDni());
+		savedEntity.setName(costumerDTO.getName());
+		savedEntity.setSurname(costumerDTO.getSurname());
+		savedEntity.setAddress(costumerDTO.getAddress());
+	
+		CostumerDTO savedDTO =mappersConfig.mergerMapper().map(costumerRepository.save(savedEntity),CostumerDTO.class);
+		return savedDTO;
+			
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		/*Costumer costumer = null;
+		Costumer dtoCostumer = mappersConfig.mergerMapper().map(costumerDTO, Costumer.class);
+		if(costumerRepository.existsBydni(dtoCostumer.getDni())) {
 			Optional<CostumerEntity> optionalOldEntity= costumerRepository.findBydni(costumerDTO.getDni());
 			CostumerEntity oldEntity = null;
 			if(optionalOldEntity.isPresent()) {
@@ -62,21 +125,22 @@ public class CostumerServiceImpl implements CostumerService {
 			id++;
 			costumer = new Costumer();
 			costumer.setCostumerId(id);
-			costumer.setIdType(newCostumer.getIdType());
-			costumer.setDni(newCostumer.getDni());
+			costumer.setIdType(dtoCostumer.getIdType());
+			costumer.setDni(dtoCostumer.getDni());
 			
 			
 			
 		}
-		costumer.setName(newCostumer.getName());
-		costumer.setSurname(newCostumer.getSurname());
-		costumer.setAddress(newCostumer.getAddress());
+		costumer.setName(dtoCostumer.getName());
+		costumer.setSurname(dtoCostumer.getSurname());
+		costumer.setAddress(dtoCostumer.getAddress());
 		
 		savedEntity = mappersConfig.mergerMapper().map(costumer, CostumerEntity.class);
 		return mappersConfig.mergerMapper().map( //mapper that maps a costumer to a costumerDTO
 				mappersConfig.mergerMapper().map( //mapper that maps a costumerEntity to a costumer
 						costumerRepository.save(savedEntity),Costumer.class), //costumerEntity to costumer
 				CostumerDTO.class); //costumerDTO
+				*/
 }
 	@Override
     public void deleteByDni(Integer dni){
